@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algohunter"
+version = "0.1.0"
+description = "Evolutionary adversarial input generator for instrumented algorithms"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Ghassen Ben Jaber"}]
+keywords = ["evolutionary-algorithm", "algorithms", "property-testing", "python", "webassembly"]
+
+[project.scripts]
+algohunter = "algohunter.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["algohunter*"]

@@ -1,0 +1,33 @@
+name: Python tests and static checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.12', '3.14']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Build static demo
+        run: python scripts/build_site.py
+      - name: Verify sample is reproducible
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from algohunter.core import Config,run_experiment
+          sample=json.loads(Path('web/sample.json').read_text())
+          assert sample == run_experiment(Config())
+          print('Sample matches Python engine')
+          PY

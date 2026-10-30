@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="AlgoHunter: an evolutionary attack laboratory that finds adversarial inputs for sorting algorithms. Real Python running in your browser.">
+  <title>AlgoHunter — An evolutionary attack lab</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="AlgoHunter home"><span class="brand-icon">A<span>↗</span></span><span>ALGO<span class="logo-italic">HUNTER</span><small>EVOLUTION LABORATORY</small></span></a>
+      <div class="top-actions"><span class="topline">ATTACK SURFACE / SORTING ALGORITHMS</span><a class="gh-link" href="https://github.com/Ghassen258/algohunter" target="_blank" rel="noopener noreferrer">SOURCE CODE ↗</a></div>
+    </header>
+
+    <main id="top">
+      <section class="intro" aria-label="Introduction">
+        <div class="eyebrow"><span class="radar" aria-hidden="true"></span> EXPERIMENT 001 / EVOLUTIONARY RED TEAMING</div>
+        <div class="hero-flex"><div><h1>MAKE AN<br>ALGORITHM <em>SUFFER.</em></h1><p class="lead">Every algorithm has a bad day. We evolve the input that causes it.</p></div><div class="hero-stamp"><span>NOT A BENCHMARK.</span><b>AN ATTACK.</b><small>GENETIC SEARCH → WORST-CASE INPUTS</small></div></div>
+        <div class="hero-bottom"><span>GENOMES = PERMUTATIONS</span><span>FITNESS = ELEMENT COMPARISONS</span><span>EXECUTION = REAL PYTHON / WASM</span></div>
+      </section>
+
+      <section class="workspace" aria-label="Attack laboratory">
+        <aside class="controls panel">
+          <div class="panel-heading"><span class="section-code">01 — SETUP</span><span class="mini-square" aria-hidden="true">⌘</span></div>
+          <h2>Build your<br><i>experiment.</i></h2>
+          <p class="panel-sub">Pick a target, select the search budget, and unleash evolution.</p>
+          <div class="fields">
+            <label class="field"><span>TARGET ALGORITHM</span><select id="algorithm"><option value="quick_last">Quicksort — last pivot</option><option value="quick_median3">Quicksort — median-of-3</option><option value="insertion">Insertion sort</option><option value="merge">Merge sort</option></select></label>
+            <div class="field"><div class="field-head"><label for="size">INPUT SIZE</label><output id="size-value">32</output></div><input id="size" type="range" min="8" max="80" step="1" value="32"><div class="range-ends"><span>8</span><span>80</span></div></div>
+            <div class="field"><div class="field-head"><label for="population">POPULATION</label><output id="population-value">40</output></div><input id="population" type="range" min="8" max="100" step="4" value="40"><div class="range-ends"><span>8</span><span>100</span></div></div>
+            <div class="field"><div class="field-head"><label for="generations">GENERATIONS</label><output id="generations-value">35</output></div><input id="generations" type="range" min="5" max="80" step="5" value="35"><div class="range-ends"><span>5</span><span>80</span></div></div>
+            <label class="field seed-field"><span>RANDOM SEED</span><input id="seed" type="number" min="0" max="4294967295" value="42" step="1" inputmode="numeric"><small>Same seed + settings → same results.</small></label>
+          </div>
+          <div class="budget"><span>EVALUATIONS / STRATEGY</span><strong id="budget">1,440</strong><small>Genetic and random search receive equal budgets.</small></div>
+          <button class="launch" id="run" disabled><span id="run-label">LOADING PYTHON ENGINE…</span><span aria-hidden="true">↗</span></button>
+          <p class="work-note" id="engine-status" role="status">Initializing Python in a Web Worker…</p>
+        </aside>
+
+        <div class="results">
+          <section class="panel performance" aria-labelledby="performance-title">
+            <div class="panel-heading"><span class="section-code">02 — FITNESS TRAJECTORY</span><span class="live-indicator" id="live-state">PREVIEW DATA</span></div>
+            <div class="chart-title-row"><div><h2 id="performance-title">Evolution <i>vs.</i> chance.</h2><p>Best comparison count found so far · higher is harder</p></div><div class="legend"><span><i class="legend-ga"></i> EVOLUTION</span><span><i class="legend-random"></i> RANDOM</span></div></div>
+            <div class="chart-wrap"><svg id="chart" role="img" aria-label="Fitness comparisons by generation" viewBox="0 0 760 280" preserveAspectRatio="none"></svg><div class="axis-label"><span>GEN 0</span><span id="axis-end">GEN 35</span></div></div>
+            <div class="metrics"><div class="metric"><small>EVOLVED WORST CASE</small><strong id="ga-score">—</strong><span>comparisons</span></div><div class="metric"><small>RANDOM SEARCH BEST</small><strong id="random-score">—</strong><span>comparisons</span></div><div class="metric"><small>EVOLUTION ADVANTAGE</small><strong id="advantage">—</strong><span>comparisons vs random</span></div></div>
+          </section>
+          <section class="panel specimen" aria-labelledby="specimen-title">
+            <div class="panel-heading"><span class="section-code">03 — THE ADVERSARIAL GENOME</span><span class="number-label" id="generation-label">GENERATION —</span></div>
+            <div class="specimen-head"><div><h2 id="specimen-title">The culprit.</h2><p>The input permutation that forces the most comparisons.</p></div><button class="subtle-button" id="copy" disabled>COPY ARRAY ↗</button></div>
+            <div class="genome" id="genome" aria-label="Evolved worst-case input displayed as bars"></div>
+            <div class="timeline"><label for="timeline">SCRUB THE EVOLUTION</label><div class="timeline-row"><button id="previous" aria-label="Previous generation" disabled>←</button><input id="timeline" type="range" min="0" max="35" value="35" disabled><button id="next" aria-label="Next generation" disabled>→</button></div><div class="timeline-labels"><span>INITIAL POPULATION</span><span id="gen-count">GENERATION 35 / 35</span></div></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="lower" aria-label="Experiments and explanation">
+        <div class="panel comparison"><div class="panel-heading"><span class="section-code">04 — CROSS-EXAMINATION</span><span class="number-label">SAME INPUT / DIFFERENT ALGORITHMS</span></div><h2>One input.<br><i>Four reactions.</i></h2><p>Run the evolved genome against each sorting algorithm. Count how often elements are compared.</p><div id="cross-results" class="cross-results"><span class="empty">AWAITING EXPERIMENT DATA</span></div></div>
+        <div class="panel theory"><div class="panel-heading"><span class="section-code">05 — THE METHOD</span><span class="mini-square">?</span></div><h2>How the hunter <i>thinks.</i></h2><div class="method-list"><div><b>01 / ENCODE</b><p>Each candidate is a permutation of <code>0…n−1</code>. No duplicate values, no invalid test cases.</p></div><div><b>02 / SCORE</b><p>Instrument real sorting implementations. Each element comparison increases the fitness score.</p></div><div><b>03 / EVOLVE</b><p>Keep elites, select strong parents with tournaments, combine their orders, then mutate.</p></div><div><b>04 / CHALLENGE</b><p>Compare against random search with an equal number of evaluations. Evolution is not guaranteed to win.</p></div></div></div>
+      </section>
+      <section class="bottom-note"><span>↳ NO PAID MODEL. NO PRETEND AI.</span><p>This is an evolutionary optimization algorithm, not a neural network or an LLM. The fitness metric is deterministic comparisons, not noisy wall-clock time. Experiments execute entirely on your device using Python via Pyodide/WebAssembly.</p><button id="export" disabled>DOWNLOAD EXPERIMENT JSON ↗</button></section>
+    </main>
+    <footer><span>ALGOHUNTER / GHASSEN BEN JABER</span><span>ENGINEERED TO FIND THE EDGE CASE.</span><a href="https://ghassen258.github.io/">BACK TO PORTFOLIO ↗</a></footer>
+  </div>
+</body>
+</html>
