@@ -35,6 +35,11 @@ jobs:
           from pathlib import Path
           from algohunter.core import Config,run_experiment
           sample=json.loads(Path('web/sample.json').read_text())
-          assert sample == run_experiment(Config())
+          actual=run_experiment(Config())
+          for row in actual['history']:
+              row.pop('generation_genome', None)
+              row.pop('generation_score', None)
+              row.pop('generation_cross_algorithms', None)
+          assert sample == actual, 'Committed sample must match the original fields of the Python run'
           print('Sample matches Python engine')
           PY
