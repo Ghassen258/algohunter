@@ -7,7 +7,7 @@ let active = false;
 let ready = false;
 let worker;
 let replayTimer = null;
-let liveHistory = [];
+let completedGenerations = 0;
 let pendingConfig = null;
 let hasRun = false;
 const keys = ['size', 'population', 'generations'];
@@ -98,16 +98,18 @@ function showGeneration(index){
   $('gen-count').textContent=`GENERATION ${visibleGeneration} / ${current.history.length-1}`;
   updateScores(point);
   renderChart(current.history,visibleGeneration);
-  renderGenome(point.genome);
-  $('genome').setAttribute('aria-label',`Best candidate at generation ${visibleGeneration}: ${point.genome.join(', ')}`);
-  renderCross({other_algorithms:point.cross_algorithms||current.other_algorithms,config:current.config});
+  const candidate=point.generation_genome||point.genome;
+  renderGenome(candidate);
+  $('generation-fitness').textContent=`CANDIDATE: ${point.generation_score??point.best} COMPARISONS · BEST SO FAR: ${point.best}`;
+  $('genome').setAttribute('aria-label',`Sample candidate at generation ${visibleGeneration}: ${point.genome.join(', ')}`);
+  renderCross({other_algorithms:point.generation_cross_algorithms||point.cross_algorithms||current.other_algorithms,config:current.config});
   $('replay-status').textContent=visibleGeneration===0?'INITIAL POPULATION — THESE ARE THE STARTING CANDIDATES.'
     :visibleGeneration===current.history.length-1?'LAST GENERATION — BEST INPUT FOUND AFTER THE SEARCH.'
     :`GENERATION ${visibleGeneration}: THE BEST-SO-FAR ARRAY AND ITS FITNESS.`;
 }
 function stopReplay(){
   if(replayTimer!==null){clearInterval(replayTimer);replayTimer=null;}
-  $('play').textContent='▶ WATCH EVOLUTION';
+  $('play').textContent='▶ WATCH SLOW EVOLUTION';
   $('play').setAttribute('aria-pressed','false');
 }
 function playReplay(){
@@ -116,7 +118,7 @@ function playReplay(){
   if(visibleGeneration>=current.history.length-1)showGeneration(0);
   $('play').textContent='Ⅱ PAUSE REPLAY';
   $('play').setAttribute('aria-pressed','true');
-  $('live-state').textContent='REPLAY / STORED PYTHON RESULTS';
+  $('live-state').textContent='WATCHING 1 GENERATION AT A TIME';
   replayTimer=setInterval(()=>{
     if(visibleGeneration>=current.history.length-1){
       stopReplay();$('live-state').textContent='REPLAY FINISHED';return;
@@ -139,15 +141,14 @@ function renderCross(result){
 function adopt(result,preview=false){
   stopReplay();
   current=result;
-  liveHistory=[];
+  completedGenerations=0;
   $('timeline').max=String(result.history.length-1);
   $('live-state').textContent=preview?'SAMPLE EXPERIMENT — NOT LIVE':'PYTHON SEARCH FINISHED';
   for(const id of ['timeline','previous','next','copy','export','play'])$(id).disabled=false;
-  if(preview){showGeneration(result.history.length-1);$('replay-status').textContent='PRELOADED SAMPLE — CLICK LAUNCH EVOLUTION TO RUN YOUR OWN AI EXPERIMENT.';}
-  else if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches){
-    showGeneration(result.history.length-1);
-    $('replay-status').textContent='SEARCH FINISHED. PRESS WATCH EVOLUTION TO REPLAY THE RESULTS.';
-  }else{showGeneration(0);playReplay();}
+  showGeneration(0);
+  if(preview)$('replay-status').textContent='PRELOADED SAMPLE · GENERATION 0. LAUNCH TO RUN PYTHON.';
+  else if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)$('replay-status').textContent='REDUCED MOTION: PRESS WATCH SLOW EVOLUTION TO START.';
+  else playReplay();
 }
 function setRunning(on){
   active=on;
@@ -164,18 +165,7 @@ function handleMessage({data}){
     return;
   }
   if(data.type==='progress'){
-    if(active){
-      const point=data.value;
-      liveHistory.push(point);
-      $('live-state').textContent=`LIVE PYTHON SEARCH / GEN ${point.generation}`;
-      $('generation-label').textContent='GENERATION '+String(point.generation).padStart(2,'0');
-      $('gen-count').textContent=`LIVE GENERATION ${point.generation} / ${pendingConfig.generations}`;
-      updateScores(point);
-      renderChart(liveHistory,liveHistory.length-1,pendingConfig.generations);
-      renderGenome(point.genome);
-      renderCross({other_algorithms:point.cross_algorithms,config:pendingConfig});
-      $('replay-status').textContent='SEARCHING IN PYTHON… ANIMATED REPLAY FOLLOWS THE RESULT.';
-    }
+    if(active){completedGenerations++;$('engine-status').textContent=`PYTHON COMPUTING ${completedGenerations} ROUNDS · SLOW REPLAY FOLLOWS`;}
     return;
   }
   if(data.type==='result'){
@@ -200,7 +190,7 @@ $('run').addEventListener('click',()=>{
   hasRun=true;
   current=null;
   pendingConfig=cfg;
-  liveHistory=[];
+  completedGenerations=0;
   for(const id of ['timeline','previous','next','copy','export','play'])$(id).disabled=true;
   setRunning(true);
   $('engine-status').textContent='Evolving permutations in Python…';
@@ -210,6 +200,7 @@ $('timeline').addEventListener('input',event=>{stopReplay();showGeneration(Numbe
 $('previous').addEventListener('click',()=>{stopReplay();showGeneration(visibleGeneration-1);});
 $('next').addEventListener('click',()=>{stopReplay();showGeneration(visibleGeneration+1);});
 $('play').addEventListener('click',()=>{if(replayTimer!==null){stopReplay();$('live-state').textContent='REPLAY PAUSED';}else playReplay();});
+$('skip').addEventListener('click',()=>{if(!current)return;stopReplay();showGeneration(current.history.length-1);$('live-state').textContent='FINAL RESULT';});
 $('speed').addEventListener('change',()=>{if(replayTimer!==null)playReplay();});
 $('copy').addEventListener('click',async()=>{
   if(!current)return;
@@ -228,7 +219,7 @@ fetch('./sample.json').then(response=>{if(!response.ok)throw Error('Preview unav
   if(!current && !hasRun && !active)adopt(result,true);
 }).catch(()=>{if(!hasRun && !current)$('live-state').textContent='AWAITING EXPERIMENT';});
 try{
-  worker=new Worker('./worker.js');
+  worker=new Worker('./worker.js?v=2');
   worker.addEventListener('message',handleMessage);
   worker.addEventListener('error',()=>handleMessage({data:{type:'error',message:'Worker failed. Serve this site over HTTP(S), not file://.'}}));
   worker.postMessage({type:'init'});
