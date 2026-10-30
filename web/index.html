@@ -47,12 +47,15 @@
             <div class="chart-title-row"><div><h2 id="performance-title">Evolution <i>vs.</i> chance.</h2><p>Best comparison count found so far · higher is harder</p></div><div class="legend"><span><i class="legend-ga"></i> EVOLUTION</span><span><i class="legend-random"></i> RANDOM</span></div></div>
             <div class="chart-wrap"><svg id="chart" role="img" aria-label="Fitness comparisons by generation" viewBox="0 0 760 280" preserveAspectRatio="none"></svg><div class="axis-label"><span>GEN 0</span><span id="axis-end">GEN 35</span></div></div>
             <div class="metrics"><div class="metric"><small>EVOLVED WORST CASE</small><strong id="ga-score">—</strong><span>comparisons</span></div><div class="metric"><small>RANDOM SEARCH BEST</small><strong id="random-score">—</strong><span>comparisons</span></div><div class="metric"><small>EVOLUTION ADVANTAGE</small><strong id="advantage">—</strong><span>comparisons vs random</span></div></div>
+            <p class="finding" id="finding" role="status">This is precomputed sample data. Launch an experiment to run a new search in Python.</p>
           </section>
           <section class="panel specimen" aria-labelledby="specimen-title">
             <div class="panel-heading"><span class="section-code">03 — THE ADVERSARIAL GENOME</span><span class="number-label" id="generation-label">GENERATION —</span></div>
-            <div class="specimen-head"><div><h2 id="specimen-title">The culprit.</h2><p>The input permutation that forces the most comparisons.</p></div><button class="subtle-button" id="copy" disabled>COPY ARRAY ↗</button></div>
+            <div class="specimen-head"><div><h2 id="specimen-title">The culprit.</h2><p>The best array discovered so far; watch it change between generations.</p></div><button class="subtle-button" id="copy" disabled>COPY ARRAY ↗</button></div>
             <div class="genome" id="genome" aria-label="Evolved worst-case input displayed as bars"></div>
-            <div class="timeline"><label for="timeline">SCRUB THE EVOLUTION</label><div class="timeline-row"><button id="previous" aria-label="Previous generation" disabled>←</button><input id="timeline" type="range" min="0" max="35" value="35" disabled><button id="next" aria-label="Next generation" disabled>→</button></div><div class="timeline-labels"><span>INITIAL POPULATION</span><span id="gen-count">GENERATION 35 / 35</span></div></div>
+            <div class="timeline"><label for="timeline">SCRUB THE EVOLUTION</label>
+              <div class="replay-tools"><button type="button" id="play" disabled aria-pressed="false">▶ WATCH EVOLUTION</button><label class="speed-label" for="speed">REPLAY SPEED <select id="speed"><option value="1100">0.5×</option><option value="550" selected>1×</option><option value="260">2×</option></select></label></div>
+              <p class="replay-status" id="replay-status" role="status">PRELOADED SAMPLE — CLICK LAUNCH EVOLUTION TO RUN YOUR OWN AI EXPERIMENT.</p><div class="timeline-row"><button id="previous" aria-label="Previous generation" disabled>←</button><input id="timeline" type="range" min="0" max="35" value="35" disabled><button id="next" aria-label="Next generation" disabled>→</button></div><div class="timeline-labels"><span>INITIAL POPULATION</span><span id="gen-count">GENERATION 35 / 35</span></div></div>
           </section>
         </div>
       </section>
