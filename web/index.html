@@ -6,15 +6,15 @@
   <meta name="theme-color" content="#111210">
   <meta name="description" content="AlgoHunter: an evolutionary attack laboratory that finds adversarial inputs for sorting algorithms. Real Python running in your browser.">
   <title>AlgoHunter — An evolutionary attack lab</title>
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./styles.css?v=2">
+  <script type="module" src="./app.js?v=2"></script>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="#top" aria-label="AlgoHunter home"><span class="brand-icon">A<span>↗</span></span><span>ALGO<span class="logo-italic">HUNTER</span><small>EVOLUTION LABORATORY</small></span></a>
-      <div class="top-actions"><span class="topline">ATTACK SURFACE / SORTING ALGORITHMS</span><a class="gh-link" href="https://github.com/Ghassen258/algohunter" target="_blank" rel="noopener noreferrer">SOURCE CODE ↗</a></div>
+      <div class="top-actions"><span class="topline">V2 SLOW EVOLUTION · ATTACK SURFACE / SORTING ALGORITHMS</span><a class="gh-link" href="https://github.com/Ghassen258/algohunter" target="_blank" rel="noopener noreferrer">SOURCE CODE ↗</a></div>
     </header>
 
     <main id="top">
@@ -51,10 +51,10 @@
           </section>
           <section class="panel specimen" aria-labelledby="specimen-title">
             <div class="panel-heading"><span class="section-code">03 — THE ADVERSARIAL GENOME</span><span class="number-label" id="generation-label">GENERATION —</span></div>
-            <div class="specimen-head"><div><h2 id="specimen-title">The culprit.</h2><p>The best array discovered so far; watch it change between generations.</p></div><button class="subtle-button" id="copy" disabled>COPY ARRAY ↗</button></div>
-            <div class="genome" id="genome" aria-label="Evolved worst-case input displayed as bars"></div>
+            <div class="specimen-head"><div><h2 id="specimen-title">The culprit.</h2><p>A real tested candidate from each generation. The curve above tracks the best-ever score.</p></div><button class="subtle-button" id="copy" disabled>COPY ARRAY ↗</button></div>
+            <div class="genome" id="genome" aria-label="Tested candidate input as bars"></div><p id="generation-fitness" class="replay-status">Candidate score appears here.</p>
             <div class="timeline"><label for="timeline">SCRUB THE EVOLUTION</label>
-              <div class="replay-tools"><button type="button" id="play" disabled aria-pressed="false">▶ WATCH EVOLUTION</button><label class="speed-label" for="speed">REPLAY SPEED <select id="speed"><option value="1100">0.5×</option><option value="550" selected>1×</option><option value="260">2×</option></select></label></div>
+              <div class="replay-tools"><button type="button" id="play" disabled aria-pressed="false">▶ WATCH SLOW EVOLUTION</button><button type="button" id="skip" disabled>SHOW FINAL RESULT ↗</button><label class="speed-label" for="speed">REPLAY SPEED <select id="speed"><option value="2800">0.5× · 2.8s</option><option value="1600" selected>1× · 1.6s</option><option value="700">2× · 0.7s</option></select></label></div>
               <p class="replay-status" id="replay-status" role="status">PRELOADED SAMPLE — CLICK LAUNCH EVOLUTION TO RUN YOUR OWN AI EXPERIMENT.</p><div class="timeline-row"><button id="previous" aria-label="Previous generation" disabled>←</button><input id="timeline" type="range" min="0" max="35" value="35" disabled><button id="next" aria-label="Next generation" disabled>→</button></div><div class="timeline-labels"><span>INITIAL POPULATION</span><span id="gen-count">GENERATION 35 / 35</span></div></div>
           </section>
         </div>
