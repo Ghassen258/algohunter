@@ -11,7 +11,7 @@ function browserStub() {
   const el = id => {
     if (!dom.has(id)) {
       dom.set(id, {
-        value:({size:'32',population:'40',generations:'35',seed:'42',algorithm:'quick_last',speed:'550'})[id] ?? '',
+        value:({size:'32',population:'40',generations:'35',seed:'42',algorithm:'quick_last',speed:'1600'})[id] ?? '',
         disabled: false, textContent:'', innerHTML:'', style:{}, children:[], listeners:{}, attributes:{},
         addEventListener(type,fn){this.listeners[type]=fn;},
         setAttribute(name,value){this.attributes[name]=value;},
@@ -50,7 +50,7 @@ test('precomputed preview clearly labeled, Python run automatically replays gene
   assert.match(el('replay-status').textContent,/PRELOADED SAMPLE/);
 
   el('run').listeners.click();
-  assert.equal(el('live-state').textContent,'REPLAY / STORED PYTHON RESULTS');
+  assert.equal(el('live-state').textContent,'WATCHING 1 GENERATION AT A TIME');
   assert.equal(el('play').attributes['aria-pressed'],'true');
   assert.match(el('gen-count').textContent,/GENERATION 0 \/ 35/);
   assert.equal(el('ga-score').textContent,String(sample.history[0].best));
