@@ -144,7 +144,7 @@ function adopt(result,preview=false){
   completedGenerations=0;
   $('timeline').max=String(result.history.length-1);
   $('live-state').textContent=preview?'SAMPLE EXPERIMENT — NOT LIVE':'PYTHON SEARCH FINISHED';
-  for(const id of ['timeline','previous','next','copy','export','play'])$(id).disabled=false;
+  for(const id of ['timeline','previous','next','copy','export','play','skip'])$(id).disabled=false;
   showGeneration(0);
   if(preview)$('replay-status').textContent='PRELOADED SAMPLE · GENERATION 0. LAUNCH TO RUN PYTHON.';
   else if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)$('replay-status').textContent='REDUCED MOTION: PRESS WATCH SLOW EVOLUTION TO START.';
@@ -179,7 +179,7 @@ function handleMessage({data}){
     $('engine-status').textContent='ENGINE ERROR: '+data.message;
     $('live-state').textContent='ENGINE ERROR';
     $('replay-status').textContent='THE EXPERIMENT FAILED. REVIEW THE ENGINE ERROR AND RETRY.';
-    for(const id of ['timeline','previous','next','copy','export','play'])$(id).disabled=true;
+    for(const id of ['timeline','previous','next','copy','export','play','skip'])$(id).disabled=true;
   }
 }
 $('run').addEventListener('click',()=>{
@@ -191,7 +191,7 @@ $('run').addEventListener('click',()=>{
   current=null;
   pendingConfig=cfg;
   completedGenerations=0;
-  for(const id of ['timeline','previous','next','copy','export','play'])$(id).disabled=true;
+  for(const id of ['timeline','previous','next','copy','export','play','skip'])$(id).disabled=true;
   setRunning(true);
   $('engine-status').textContent='Evolving permutations in Python…';
   worker.postMessage({type:'run',config:cfg});
