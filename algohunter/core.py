@@ -196,6 +196,9 @@ def run_experiment(config: Config, on_progress: Callable[[dict], None] | None = 
             "random_best": random_best,
             "diversity": len({tuple(genome) for _, genome in evaluations}),
             "genome": best_genome.copy(),
+            "generation_genome": population[-1].copy(),
+            "generation_score": comparisons(population[-1], config.algorithm),
+            "generation_cross_algorithms": {key: comparisons(population[-1], key) for key in ALGORITHMS},
             "cross_algorithms": {key: (best_score if key == config.algorithm else comparisons(best_genome, key)) for key in ALGORITHMS},
         }
         history.append(record)
